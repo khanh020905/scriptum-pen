@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SCRIPTUM — Bespoke Fountain Pen & Writing Instrument Atelier." />
+  <title>SCRIPTUM — Leave a Mark</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Prata&family=Petit+Formal+Script&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ink:#11100e;
+      --paper:#eee8dc;
+      --paper-2:#d8cfbe;
+      --oxblood:#6c2431;
+      --gold:#a88956;
+      --green:#33493c;
+      --blue:#243d59;
+      --sepia:#6f5135;
+      --line:rgba(17,16,14,.15);
+      --line-light:rgba(238,232,220,.18);
+      --pad:clamp(18px,4vw,72px);
+      --ease:cubic-bezier(.22,.68,0,1);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:auto}
+    body{
+      margin:0;
+      overflow-x:hidden;
+      color:var(--ink);
+      background:var(--paper);
+      font-family:"DM Sans",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    body.menu-open{overflow:hidden}
+    img{display:block;width:100%;height:100%;object-fit:cover}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{color:inherit}
+    section{position:relative}
+    ::selection{background:var(--oxblood);color:#fff}
+    .serif{font-family:"Playfair Display",serif;font-weight:400}
+    .script{font-family:"Petit Formal Script",cursive;font-weight:400}
+    .eyebrow{
+      display:flex;align-items:center;gap:11px;
+      text-transform:uppercase;letter-spacing:.2em;font-size:8px;
+    }
+    .eyebrow::before{content:"";width:30px;height:1px;background:currentColor;opacity:.68}
+    .btn{
+      min-height:48px;padding:0 21px;
+      display:inline-flex;align-items:center;justify-content:center;gap:14px;
+      border:1px solid currentColor;background:transparent;
+      text-transform:uppercase;letter-spacing:.14em;font-size:9px;
+      cursor:pointer;transition:.35s ease;
+    }
+    .btn:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px)}
+    .btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+    .btn.dark:hover{background:var(--oxblood);border-color:var(--oxblood)}
+    .btn.light{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+    .btn.light:hover{background:var(--gold);border-color:var(--gold);color:white}
+    .grain{
+      position:fixed;inset:0;z-index:500;pointer-events:none;opacity:.04;mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.82'/%3E%3C/svg%3E");
+    }
+
+    /* NAV */
+    .nav{
+      position:fixed;inset:0 0 auto;z-index:150;
+      height:70px;padding:0 var(--pad);
+      display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+      color:#fff;mix-blend-mode:difference;
+    }
+    .brand{font-family:"Playfair Display",serif;font-size:27px;letter-spacing:.18em}
+    .nav-center{text-transform:uppercase;letter-spacing:.2em;font-size:8px;opacity:.66}
+    .nav-links{justify-self:end;display:flex;align-items:center;gap:28px}
+    .nav-links a{font-size:8px;text-transform:uppercase;letter-spacing:.15em}
+    .menu-toggle{display:none;border:0;background:none;padding:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.14em;font-size:9px}
+    .mobile-menu{
+      position:fixed;inset:0;z-index:140;background:var(--ink);color:var(--paper);
+      padding:110px 22px 28px;
+      display:flex;flex-direction:column;justify-content:space-between;
+      transform:translateY(-104%);transition:transform .72s var(--ease);
+    }
+    .mobile-menu.active{transform:translateY(0)}
+    .mobile-menu a{
+      display:block;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.13);
+      font-family:"Playfair Display",serif;font-size:clamp(44px,14vw,78px);line-height:1;
+    }
+    .mobile-menu small{text-transform:uppercase;letter-spacing:.17em;opacity:.44}
+
+    /* 1 HERO — LIVE MANUSCRIPT */
+    .hero{
+      height:100svh;min-height:740px;background:var(--paper);overflow:hidden;
+      padding:70px var(--pad) 0;
+    }
+    .paper-grid{
+      position:absolute;inset:70px 0 0;
+      background:
+        linear-gradient(rgba(17,16,14,.04) 1px,transparent 1px);
+      background-size:100% 44px;
+      mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 90%);
+    }
+    .margin-line{
+      position:absolute;left:12vw;top:70px;bottom:0;width:1px;background:rgba(108,36,49,.2);
+    }
+    .hero-copy{
+      position:absolute;left:var(--pad);top:14vh;z-index:8;max-width:480px;
+    }
+    .hero-copy p{margin:18px 0 0;max-width:390px;font-size:10px;line-height:1.85;color:rgba(17,16,14,.58)}
+    .hero-script{
+      position:absolute;left:10vw;right:5vw;top:45%;z-index:5;transform:translateY(-50%);
+      height:45vh;
+    }
+    .hero-script svg{width:100%;height:100%;overflow:visible}
+    .ink-path{
+      fill:none;stroke:var(--oxblood);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;
+      stroke-dasharray:2400;stroke-dashoffset:2400;
+      filter:url(#inkShadow);
+    }
+    .ink-path.thin{stroke-width:2.2;opacity:.75}
+    .hero-title{
+      position:absolute;left:var(--pad);right:var(--pad);bottom:9vh;z-index:4;
+      margin:0;font-family:"Playfair Display",serif;font-size:clamp(64px,10vw,160px);
+      line-height:.76;letter-spacing:-.06em;font-weight:400;
+    }
+    .hero-title span{display:block;overflow:hidden;padding-bottom:0.25em;margin-bottom:-0.25em;padding-top:0.1em;margin-top:-0.1em}
+    .hero-title i{display:block;font-style:normal;transform:translateY(115%)}
+    .hero-title span:nth-child(2){padding-left:28vw}
+    .hero-pen{
+      position:absolute;left:58%;top:45%;z-index:10;width:min(38vw,620px);height:120px;
+      transform:translate(-50%,-50%) rotate(-12deg);
+      clip-path:inset(0 100% 0 0);
+      filter:drop-shadow(0 24px 28px rgba(0,0,0,.16));
+    }
+    .hero-pen img{object-fit:contain;filter:saturate(.45) contrast(1.12);transform:scale(1.08)}
+    .hero-note{
+      position:absolute;right:var(--pad);top:14vh;z-index:8;width:260px;
+      border-top:1px solid var(--line);
+    }
+    .note-row{
+      display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);
+      text-transform:uppercase;letter-spacing:.11em;font-size:8px;
+    }
+    .note-row span:first-child{opacity:.44}
+    .hero-actions{
+      position:absolute;right:var(--pad);bottom:4vh;z-index:12;display:flex;gap:8px;
+    }
+    .hero-page{
+      position:absolute;left:var(--pad);bottom:4.5vh;z-index:12;
+      text-transform:uppercase;letter-spacing:.16em;font-size:8px;
+    }
+    .ink-cursor{
+      position:fixed;z-index:400;width:12px;height:12px;border-radius:50%;
+      background:var(--oxblood);pointer-events:none;opacity:0;
+      box-shadow:0 0 0 12px rgba(108,36,49,.09);
+    }
+
+    /* 2 WRITING TEST */
+    .writing-test{
+      min-height:100svh;background:var(--ink);color:var(--paper);
+      padding:110px var(--pad) 80px;overflow:hidden;
+    }
+    .writing-head{
+      display:grid;grid-template-columns:.72fr 1.28fr;gap:8vw;align-items:end;margin-bottom:55px;
+    }
+    .writing-head h2{margin:14px 0 0;font-size:clamp(58px,7.7vw,120px);line-height:.78;letter-spacing:-.06em}
+    .writing-head p{margin:0;max-width:460px;font-size:10px;line-height:1.85;color:rgba(238,232,220,.56)}
+    .writing-studio{
+      display:grid;grid-template-columns:.42fr 1fr;gap:16px;min-height:72vh;
+    }
+    .nib-panel{
+      border:1px solid var(--line-light);padding:24px;
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .nib-list{display:flex;flex-direction:column}
+    .nib-option{
+      border:0;border-top:1px solid rgba(255,255,255,.14);background:none;
+      padding:17px 0;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;
+      text-align:left;cursor:pointer;opacity:.38;transition:.3s ease;
+    }
+    .nib-option:last-child{border-bottom:1px solid rgba(255,255,255,.14)}
+    .nib-option.active,.nib-option:hover{opacity:1;padding-left:8px}
+    .nib-option span{font-family:"Prata",serif;font-size:18px}
+    .nib-option strong{font-family:"Playfair Display",serif;font-size:25px;font-weight:400}
+    .nib-option small{text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.45}
+    .nib-info{margin-top:30px}
+    .nib-info-row{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-top:1px solid rgba(255,255,255,.13)}
+    .nib-info-row span{text-transform:uppercase;letter-spacing:.13em;font-size:7px;opacity:.44}
+    .nib-info-row strong{font-size:10px;font-weight:400}
+    .paper-canvas{
+      position:relative;overflow:hidden;background:#e8e0d1;color:var(--ink);
+      min-height:620px;
+      background-image:linear-gradient(rgba(17,16,14,.055) 1px,transparent 1px);
+      background-size:100% 44px;
+    }
+    .paper-canvas::before{
+      content:"";position:absolute;left:10%;top:0;bottom:0;width:1px;background:rgba(108,36,49,.18);z-index:2;
+    }
+    #writingCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+    .canvas-instruction{
+      position:absolute;left:24px;top:20px;z-index:4;
+      text-transform:uppercase;letter-spacing:.15em;font-size:8px;color:rgba(17,16,14,.5);
+      pointer-events:none;
+    }
+    .canvas-sample{
+      position:absolute;left:14%;right:8%;top:26%;z-index:1;
+      font-family:"Petit Formal Script",cursive;font-size:clamp(34px,5vw,72px);
+      color:rgba(17,16,14,.12);pointer-events:none;
+    }
+    .canvas-tools{
+      position:absolute;right:18px;bottom:18px;z-index:5;display:flex;gap:8px;
+    }
+    .tool-btn{
+      min-height:40px;padding:0 13px;border:1px solid rgba(17,16,14,.22);background:rgba(238,232,220,.82);
+      text-transform:uppercase;letter-spacing:.12em;font-size:7px;cursor:pointer;
+    }
+
+    /* 3 MANUSCRIPT COLLECTION */
+    .collection{
+      background:var(--paper);padding:120px var(--pad) 100px;overflow:hidden;
+    }
+    .collection-head{
+      display:grid;grid-template-columns:.72fr 1.28fr;gap:8vw;align-items:end;margin-bottom:70px;
+    }
+    .collection-head h2{margin:14px 0 0;font-size:clamp(60px,8vw,126px);line-height:.78;letter-spacing:-.06em}
+    .collection-head p{margin:0;max-width:460px;font-size:10px;line-height:1.85;color:rgba(17,16,14,.58)}
+    .manuscript{
+      position:relative;min-height:2450px;
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      perspective:1600px;
+    }
+    .fold{
+      position:absolute;background:#e9e1d3;border:1px solid rgba(17,16,14,.12);
+      box-shadow:0 28px 55px rgba(0,0,0,.07);
+      transform-style:preserve-3d;
+    }
+    .fold.f1{left:3%;top:5%;width:58%;height:430px;transform:rotate(-3deg)}
+    .fold.f2{right:4%;top:28%;width:52%;height:470px;transform:rotate(4deg)}
+    .fold.f3{left:6%;top:53%;width:55%;height:460px;transform:rotate(-4deg)}
+    .fold.f4{right:3%;top:77%;width:58%;height:430px;transform:rotate(3deg)}
+    .fold::after{
+      content:"";position:absolute;inset:0;
+      background:
+        linear-gradient(90deg,transparent 49%,rgba(17,16,14,.06) 50%,transparent 51%),
+        linear-gradient(180deg,transparent 49%,rgba(17,16,14,.045) 50%,transparent 51%);
+      pointer-events:none;
+    }
+    .pen-photo{position:absolute;inset:0;overflow:hidden}
+    .pen-photo img{filter:saturate(.45) contrast(1.08);transform:scale(1.08)}
+    .pen-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(0,0,0,.42))}
+    .pen-index{
+      position:absolute;left:18px;top:18px;z-index:4;width:44px;height:44px;border-radius:50%;
+      display:grid;place-items:center;background:rgba(238,232,220,.92);font-family:"Prata",serif;font-size:15px;
+    }
+    .pen-copy{
+      position:absolute;left:22px;right:22px;bottom:20px;z-index:5;color:white;
+    }
+    .pen-type{text-transform:uppercase;letter-spacing:.15em;font-size:7px;color:#e0bf93}
+    .pen-name{margin:7px 0 9px;font-family:"Playfair Display",serif;font-size:clamp(34px,4vw,58px);font-weight:400}
+    .pen-desc{margin:0;max-width:430px;font-size:9px;line-height:1.72;color:rgba(255,255,255,.62)}
+    .pen-price{
+      position:absolute;right:18px;top:18px;z-index:5;padding:13px 15px;background:rgba(238,232,220,.9);color:var(--ink);
+      transform:rotate(2deg);
+    }
+    .pen-price span{display:block;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.46}
+    .pen-price strong{font-family:"Prata",serif;font-size:24px;font-weight:400}
+    .punctuation{
+      position:absolute;font-family:"Prata",serif;font-size:clamp(120px,16vw,240px);
+      line-height:.7;color:rgba(108,36,49,.16);
+    }
+    .p1{right:6%;top:9%}.p2{left:5%;top:34%}.p3{right:5%;top:60%}.p4{left:7%;top:83%}
+    .manuscript-line{
+      position:absolute;left:50%;top:2%;bottom:2%;width:1px;background:rgba(17,16,14,.08);
+    }
+    .collection-note{
+      position:sticky;top:95px;margin-left:calc(50% + 18px);
+      display:inline-block;padding:8px 10px;background:var(--paper);
+      text-transform:uppercase;letter-spacing:.14em;font-size:7px;
+    }
+
+    /* 4 INK LAB */
+    .ink-lab{
+      min-height:100svh;background:var(--oxblood);color:var(--paper);
+      display:grid;grid-template-columns:.58fr 1.42fr;overflow:hidden;
+      transition:background-color .7s ease;
+    }
+    .ink-panel{
+      padding:115px var(--pad) 65px;border-right:1px solid var(--line-light);
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .ink-panel h2{margin:14px 0 0;font-size:clamp(58px,7vw,110px);line-height:.78;letter-spacing:-.06em}
+    .ink-swatches{margin-top:50px}
+    .ink-swatch{
+      width:100%;display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:14px;
+      padding:16px 0;border:0;border-top:1px solid rgba(255,255,255,.16);background:none;
+      text-align:left;cursor:pointer;opacity:.4;transition:.3s ease;
+    }
+    .ink-swatch:last-child{border-bottom:1px solid rgba(255,255,255,.16)}
+    .ink-swatch.active,.ink-swatch:hover{opacity:1;padding-left:8px}
+    .ink-drop{width:16px;height:20px;border-radius:50% 50% 55% 45% / 58% 58% 42% 42%;background:var(--drop);transform:rotate(45deg)}
+    .ink-swatch strong{font-family:"Playfair Display",serif;font-size:26px;font-weight:400}
+    .ink-swatch small{text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.45}
+    .ink-description{margin-top:34px}
+    .ink-description p{margin:0;font-size:10px;line-height:1.82;color:rgba(238,232,220,.62)}
+    .ink-vessel{
+      position:relative;overflow:hidden;min-height:100svh;background:#1f1115;
+    }
+    #inkCanvas{position:absolute;inset:0;width:100%;height:100%}
+    .ink-glass{
+      position:absolute;left:50%;top:50%;width:min(54%,620px);aspect-ratio:1;
+      transform:translate(-50%,-50%);
+      border:1px solid rgba(255,255,255,.38);border-radius:50%;
+      box-shadow:inset 0 0 80px rgba(255,255,255,.04),0 30px 80px rgba(0,0,0,.18);
+      backdrop-filter:blur(1px);
+    }
+    .ink-glass::before{
+      content:"";position:absolute;inset:8%;border:1px solid rgba(255,255,255,.14);border-radius:50%;
+    }
+    .ink-name{
+      position:absolute;left:28px;bottom:28px;z-index:6;
+    }
+    .ink-name h3{margin:0 0 7px;font-family:"Playfair Display",serif;font-size:clamp(44px,5vw,78px);font-weight:400}
+    .ink-name p{margin:0;max-width:440px;font-size:9px;line-height:1.7;color:rgba(255,255,255,.6)}
+    .ink-data{
+      position:absolute;right:28px;bottom:28px;z-index:6;
+      display:grid;grid-template-columns:repeat(3,auto);gap:26px;padding-top:16px;border-top:1px solid rgba(255,255,255,.26);
+    }
+    .ink-data span{display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.42}
+    .ink-data strong{font-size:10px;font-weight:400}
+
+    /* 5 NIB COMPOSER */
+    .composer{
+      min-height:100svh;background:#b9aa92;color:var(--ink);
+      padding:90px var(--pad) 34px;overflow:hidden;
+    }
+    .composer-shell{
+      min-height:calc(100svh - 124px);position:relative;
+      border:1px solid var(--line);background:rgba(255,255,255,.12);overflow:hidden;
+    }
+    .desk{
+      position:absolute;inset:0;
+      background:
+        linear-gradient(90deg,rgba(17,16,14,.04) 1px,transparent 1px),
+        linear-gradient(rgba(17,16,14,.04) 1px,transparent 1px);
+      background-size:54px 54px;
+    }
+    .composer-head{position:absolute;left:28px;top:28px;z-index:10}
+    .composer-head h2{margin:14px 0 0;font-size:clamp(52px,6vw,92px);line-height:.78;letter-spacing:-.055em}
+    .nib-center{
+      position:absolute;left:50%;top:48%;z-index:5;width:min(42vw,620px);height:48vh;
+      transform:translate(-50%,-50%);
+      filter:drop-shadow(0 28px 34px rgba(0,0,0,.18));
+    }
+    .nib-center img{object-fit:contain;filter:saturate(.48) contrast(1.12)}
+    .component{
+      position:absolute;z-index:8;width:200px;padding:14px;
+      border:1px solid rgba(17,16,14,.18);background:rgba(238,232,220,.78);backdrop-filter:blur(12px);
+      cursor:pointer;transition:.3s ease;
+    }
+    .component:hover,.component.active{background:var(--ink);color:var(--paper);transform:translateY(-4px)}
+    .component span{display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.46}
+    .component strong{font-family:"Playfair Display",serif;font-size:23px;font-weight:400}
+    .component em{display:block;margin-top:6px;font-style:normal;font-size:8px;opacity:.58}
+    .component.nib{left:3%;top:36%}
+    .component.barrel{right:3%;top:32%}
+    .component.ink{left:5%;bottom:18%}
+    .component.engraving{right:5%;bottom:17%}
+    .composer-panel{
+      position:absolute;right:24px;top:24px;z-index:10;width:310px;padding:20px;
+      background:rgba(17,16,14,.78);backdrop-filter:blur(16px);color:var(--paper);
+      border:1px solid rgba(255,255,255,.15);
+    }
+    .composer-panel-top{
+      display:flex;justify-content:space-between;gap:14px;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.48;
+    }
+    .composer-name{margin:13px 0 5px;font-family:"Playfair Display",serif;font-size:36px;font-weight:400}
+    .composer-style{margin:0;color:#d3af7c;text-transform:uppercase;letter-spacing:.12em;font-size:8px}
+    .writing-preview{
+      margin-top:18px;padding:18px 0 10px;border-top:1px solid rgba(255,255,255,.12);
+      font-family:"Petit Formal Script",cursive;font-size:29px;color:#efe6d8;
+    }
+    .composer-stats{margin-top:12px}
+    .composer-stat{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-top:1px solid rgba(255,255,255,.12);font-size:8px}
+    .composer-stat span{opacity:.44}
+    .composer-price{margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.22)}
+    .composer-price span{display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.44}
+    .composer-price strong{font-family:"Prata",serif;font-size:31px;font-weight:400}
+    .composer-modes{
+      position:absolute;left:28px;bottom:28px;z-index:10;display:flex;gap:8px;flex-wrap:wrap;
+    }
+    .mode{
+      min-height:42px;padding:0 14px;border:1px solid rgba(17,16,14,.18);background:rgba(238,232,220,.62);
+      text-transform:uppercase;letter-spacing:.1em;font-size:8px;cursor:pointer;transition:.3s ease;
+    }
+    .mode.active,.mode:hover{background:var(--oxblood);color:white;border-color:var(--oxblood)}
+    .composer-actions{position:absolute;right:28px;bottom:28px;z-index:10;display:flex;gap:8px}
+
+    /* 6 LETTER FOLD */
+    .finale{
+      min-height:100svh;background:var(--ink);color:var(--paper);overflow:hidden;
+      display:flex;flex-direction:column;
+    }
+    .letter-scene{
+      position:relative;min-height:70svh;padding:110px var(--pad) 50px;
+      display:flex;align-items:flex-end;overflow:hidden;
+    }
+    .letter-bg{position:absolute;inset:0}
+    .letter-bg img{filter:saturate(.24) brightness(.42);transform:scale(1.08)}
+    .letter-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.1) 62%,rgba(0,0,0,.35))}
+    .letter-flap{
+      position:absolute;left:18%;right:18%;top:-28%;height:58%;z-index:4;
+      background:linear-gradient(180deg,#d7ccb9,#eee7da);
+      clip-path:polygon(0 0,100% 0,50% 100%);
+      transform-origin:top;transform:rotateX(0deg);
+      box-shadow:0 30px 60px rgba(0,0,0,.14);
+    }
+    .letter-copy{position:relative;z-index:6;max-width:1100px}
+    .letter-copy h2{margin:14px 0 22px;font-size:clamp(60px,8.7vw,142px);line-height:.75;letter-spacing:-.06em}
+    .letter-copy p{margin:0;max-width:520px;font-size:10px;line-height:1.85;color:rgba(238,232,220,.6)}
+    .commission{
+      position:relative;z-index:8;margin:-1px var(--pad) 0;
+      display:grid;grid-template-columns:1.42fr .58fr;background:var(--paper);color:var(--ink);
+      border:1px solid var(--line);
+    }
+    .commission-main{padding:28px;border-right:1px dashed rgba(17,16,14,.28)}
+    .commission-head{
+      display:flex;justify-content:space-between;gap:24px;align-items:end;
+      padding-bottom:22px;border-bottom:1px solid var(--line);
+    }
+    .commission-head h3{margin:11px 0 0;font-family:"Playfair Display",serif;font-size:clamp(34px,4vw,60px);font-weight:400}
+    .commission-code{text-align:right}
+    .commission-code span{display:block;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.45}
+    .commission-code strong{font-family:monospace;font-size:14px;letter-spacing:.18em}
+    .commission-form{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-top:18px}
+    .field{position:relative;border-bottom:1px solid var(--line)}
+    .field input,.field select{
+      width:100%;height:54px;border:0;outline:0;background:transparent;color:var(--ink);
+      appearance:none;border-radius:0;font-size:10px;
+    }
+    .field input::placeholder{color:rgba(17,16,14,.46)}
+    .field::after{content:"";position:absolute;left:0;right:100%;bottom:-1px;height:1px;background:var(--oxblood);transition:right .4s ease}
+    .field:focus-within::after{right:0}
+    .commission-side{
+      padding:28px;display:flex;flex-direction:column;justify-content:space-between;position:relative;
+    }
+    .commission-side::before,.commission-side::after{
+      content:"";position:absolute;left:-11px;width:22px;height:22px;border-radius:50%;background:var(--ink);
+    }
+    .commission-side::before{top:-11px}.commission-side::after{bottom:-11px}
+    .commission-side span{display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.14em;font-size:7px;opacity:.45}
+    .commission-side strong{font-family:"Prata",serif;font-size:30px;font-weight:400}
+    .seal{
+      width:72px;height:72px;border-radius:50%;margin:24px auto;
+      background:radial-gradient(circle at 35% 30%,#8b3241,#5c1e29 70%);
+      box-shadow:inset 0 0 0 5px rgba(255,255,255,.08),0 10px 20px rgba(0,0,0,.15);
+      display:grid;place-items:center;color:#d9b888;font-family:"Prata",serif;font-size:18px;
+    }
+    .commission-side .btn{width:100%}
+    .marquee{
+      height:52px;margin-top:38px;overflow:hidden;display:flex;align-items:center;
+      border-top:1px solid var(--line-light);border-bottom:1px solid var(--line-light);
+    }
+    .marquee-track{display:flex;width:max-content;animation:marquee 23s linear infinite}
+    .marquee-line{
+      white-space:nowrap;padding-right:34px;display:flex;gap:34px;align-items:center;
+      font-family:"Playfair Display",serif;font-size:18px;color:rgba(238,232,220,.56);
+    }
+    .marquee-line::after{content:"✦";color:var(--gold)}
+    @keyframes marquee{to{transform:translateX(-50%)}}
+    .footer{
+      min-height:105px;padding:0 var(--pad);
+      display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    }
+    .footer-brand{font-family:"Playfair Display",serif;font-size:29px;letter-spacing:.18em}
+    .footer-nav{display:flex;gap:28px;text-transform:uppercase;letter-spacing:.13em;font-size:8px}
+    .footer-copy{justify-self:end;font-size:8px;opacity:.4}
+
+    @media (max-width:1100px){
+      .nav-center{display:none}
+      .nav{grid-template-columns:1fr 1fr}
+      .writing-studio{grid-template-columns:.5fr 1fr}
+      .ink-lab{grid-template-columns:.68fr 1.32fr}
+      .composer-panel{width:285px}
+      .commission{grid-template-columns:1.3fr .7fr}
+    }
+
+    @media (max-width:780px){
+      :root{--pad:20px}
+      .nav{height:66px}
+      .nav-links a{display:none}
+      .menu-toggle{display:block}
+      .hero{min-height:920px}
+      .hero-copy{top:11vh;max-width:70vw}
+      .hero-copy p{display:none}
+      .hero-script{left:2vw;right:2vw;top:42%;height:38vh}
+      .hero-title{font-size:58px;bottom:18vh}
+      .hero-title span:nth-child(2){padding-left:8vw}
+      .hero-pen{width:88vw;height:100px;top:47%}
+      .hero-note{right:20px;top:auto;bottom:29vh;width:210px}
+      .hero-actions{left:20px;right:20px;bottom:4vh;display:grid;grid-template-columns:1fr 1fr}
+      .hero-page{display:none}
+
+      .writing-test{padding:100px 20px 70px}
+      .writing-head{display:block;margin-bottom:48px}
+      .writing-head h2{font-size:58px}
+      .writing-head p{margin-top:26px}
+      .writing-studio{display:block;min-height:0}
+      .nib-panel{margin-bottom:14px}
+      .nib-list{display:grid;grid-template-columns:1fr 1fr}
+      .nib-option{grid-template-columns:30px 1fr}
+      .nib-option small{display:none}
+      .paper-canvas{min-height:560px}
+
+      .collection{padding:100px 20px 70px}
+      .collection-head{display:block;margin-bottom:50px}
+      .collection-head h2{font-size:58px}
+      .collection-head p{margin-top:28px}
+      .manuscript{min-height:0}
+      .manuscript-line,.collection-note,.punctuation{display:none}
+      .fold,.fold.f1,.fold.f2,.fold.f3,.fold.f4{
+        position:relative;left:auto;right:auto;top:auto;width:100%;height:520px;
+        margin-bottom:26px;transform:none!important;
+      }
+
+      .ink-lab{display:block;min-height:0}
+      .ink-panel{padding:100px 20px 70px;border-right:0}
+      .ink-panel h2{font-size:58px}
+      .ink-vessel{min-height:72vh}
+      .ink-data{left:20px;right:20px;grid-template-columns:1fr 1fr}
+      .ink-data > div:last-child{display:none}
+
+      .composer{padding:90px 20px 20px;min-height:1220px}
+      .composer-shell{min-height:1180px}
+      .composer-head{left:20px;top:20px}
+      .composer-head h2{font-size:56px}
+      .nib-center{width:88vw;height:36vh;top:41%}
+      .component{width:calc(50% - 30px)}
+      .component.nib{left:20px;top:56%}
+      .component.barrel{right:20px;top:56%}
+      .component.ink{left:20px;bottom:19%}
+      .component.engraving{right:20px;bottom:19%}
+      .composer-panel{left:20px;right:20px;top:auto;bottom:120px;width:auto}
+      .composer-modes{left:20px;right:20px;bottom:66px;display:grid;grid-template-columns:repeat(2,1fr)}
+      .composer-actions{left:20px;right:20px;bottom:16px}
+      .composer-actions .btn{flex:1}
+
+      .letter-scene{min-height:76svh;padding:100px 20px 45px}
+      .letter-copy h2{font-size:58px}
+      .commission{margin:0 20px;display:block}
+      .commission-main{border-right:0;border-bottom:1px dashed rgba(17,16,14,.28)}
+      .commission-form{grid-template-columns:1fr 1fr}
+      .commission-side::before,.commission-side::after{display:none}
+      .footer{min-height:150px;grid-template-columns:1fr auto}
+      .footer-nav{display:none}
+    }
+
+    @media (max-width:480px){
+      .hero-title,.writing-head h2,.collection-head h2,.ink-panel h2,.composer-head h2{font-size:50px}
+      .hero-actions{grid-template-columns:1fr}
+      .hero-actions .btn:first-child{display:none}
+      .hero-note{bottom:30vh}
+      .nib-list{grid-template-columns:1fr}
+      .paper-canvas{min-height:500px}
+      .fold,.fold.f1,.fold.f2,.fold.f3,.fold.f4{height:500px}
+      .pen-price{right:12px;top:12px}
+      .composer{min-height:1350px}
+      .composer-shell{min-height:1310px}
+      .component{width:calc(100% - 40px)}
+      .component.nib{top:51%}
+      .component.barrel{top:60%}
+      .component.ink{bottom:27%}
+      .component.engraving{bottom:19%}
+      .composer-panel{bottom:160px}
+      .composer-modes{grid-template-columns:1fr;bottom:80px}
+      .composer-actions{display:grid;grid-template-columns:1fr}
+      .letter-copy h2{font-size:50px}
+      .commission-head{display:block}
+      .commission-code{text-align:left;margin-top:18px}
+      .commission-form{grid-template-columns:1fr}
+      .footer-copy{display:none}
+      .footer{grid-template-columns:1fr}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain"></div>
+  <div class="ink-cursor" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a class="brand" href="#hero">SCRIPTUM</a>
+    <div class="nav-center">Bespoke Fountain Pen & Writing Instrument Atelier</div>
+    <div class="nav-links">
+      <a href="#writing">Writing Test</a>
+      <a href="#collection">Collection</a>
+      <a href="#composer">Composer</a>
+      <button class="menu-toggle" type="button">Menu</button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" aria-hidden="true">
+    <div>
+      <a href="#writing">Writing Test</a>
+      <a href="#collection">Collection</a>
+      <a href="#ink">Ink Laboratory</a>
+      <a href="#composer">Nib Composer</a>
+      <a href="#finale">Commission</a>
+    </div>
+    <small>SCRIPTUM · Leave a mark</small>
+  </div>
+
+  <main>
+    <!-- 1 HERO -->
+    <section class="hero" id="hero">
+      <div class="paper-grid"></div>
+      <div class="margin-line"></div>
+
+      <div class="hero-copy">
+        <div class="eyebrow">Bespoke writing instrument atelier</div>
+        <p>Fountain pen thủ công, ngòi vàng cá nhân hóa, mực pha riêng và dịch vụ điều chỉnh nét viết theo chính bàn tay của chủ nhân.</p>
+      </div>
+
+      <div class="hero-note">
+        <div class="note-row"><span>Model</span><strong>SCRIPTUM S1</strong></div>
+        <div class="note-row"><span>Nib</span><strong>18K Fine</strong></div>
+        <div class="note-row"><span>Ink</span><strong>Oxblood No. 4</strong></div>
+        <div class="note-row"><span>Giá từ</span><strong>68.000.000₫</strong></div>
+      </div>
+
+      <div class="hero-script" aria-hidden="true">
+        <svg viewBox="0 0 1400 500">
+          <defs>
+            <filter id="inkShadow">
+              <feGaussianBlur stdDeviation="0.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <path class="ink-path" d="M60 310 C150 245 220 380 310 288 C390 205 440 310 510 290 C595 266 640 165 716 238 C790 310 760 370 860 326 C980 272 1010 170 1100 238 C1180 300 1210 270 1340 190"/>
+          <path class="ink-path thin" d="M92 335 C230 360 340 350 470 332 C610 314 740 350 884 338 C1050 324 1180 304 1330 274"/>
+        </svg>
+      </div>
+
+      <div class="hero-pen">
+        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=90" alt="SCRIPTUM bespoke fountain pen">
+      </div>
+
+      <h1 class="hero-title">
+        <span><i>Leave a</i></span>
+        <span><i>mark</i></span>
+      </h1>
+
+      <div class="hero-page">Manuscript / 01</div>
+      <div class="hero-actions">
+        <a class="btn dark" href="#collection">Khám phá collection <span>↘</span></a>
+        <a class="btn" href="#finale">Commission a pen <span>→</span></a>
+      </div>
+    </section>
+
+    <!-- 2 WRITING TEST -->
+    <section class="writing-test" id="writing">
+      <div class="writing-head">
+        <div>
+          <div class="eyebrow">02 · The writing test</div>
+          <h2 class="serif">A nib should move<br>like your hand.</h2>
+        </div>
+        <p>Chọn loại ngòi và thử viết trực tiếp trên trang giấy. Độ dày, độ ướt và phản hồi của nét sẽ thay đổi theo từng cấu hình.</p>
+      </div>
+
+      <div class="writing-studio">
+        <aside class="nib-panel">
+          <div class="nib-list">
+            <button class="nib-option active" type="button" data-nib="fine"><span>F</span><strong>Fine</strong><small>0.4 mm</small></button>
+            <button class="nib-option" type="button" data-nib="medium"><span>M</span><strong>Medium</strong><small>0.6 mm</small></button>
+            <button class="nib-option" type="button" data-nib="broad"><span>B</span><strong>Broad</strong><small>0.9 mm</small></button>
+            <button class="nib-option" type="button" data-nib="stub"><span>S</span><strong>Stub</strong><small>1.1 mm</small></button>
+            <button class="nib-option" type="button" data-nib="flex"><span>FX</span><strong>Flex</strong><small>Variable</small></button>
+          </div>
+
+          <div class="nib-info">
+            <div class="nib-info-row"><span>Line width</span><strong id="nibWidth">0.4 mm</strong></div>
+            <div class="nib-info-row"><span>Wetness</span><strong id="nibWetness">Balanced</strong></div>
+            <div class="nib-info-row"><span>Flex</span><strong id="nibFlex">Low</strong></div>
+          </div>
+        </aside>
+
+        <div class="paper-canvas">
+          <canvas id="writingCanvas"></canvas>
+          <div class="canvas-instruction">Kéo chuột hoặc chạm để thử nét viết</div>
+          <div class="canvas-sample">Every hand leaves a different rhythm.</div>
+          <div class="canvas-tools">
+            <button class="tool-btn" type="button" id="clearCanvas">Xóa trang</button>
+            <button class="tool-btn" type="button" id="guideCanvas">Ẩn mẫu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 COLLECTION -->
+    <section class="collection" id="collection">
+      <div class="collection-head">
+        <div>
+          <div class="eyebrow">03 · Pen collection</div>
+          <h2 class="serif">Four instruments.<br>Four punctuation marks.</h2>
+        </div>
+        <p>Bộ sưu tập không nằm trong product grid. Mỗi cây bút được đặt trên một nếp gấp khác nhau của bản thảo dài.</p>
+      </div>
+
+      <div class="manuscript">
+        <div class="manuscript-line"></div>
+        <div class="collection-note">Scroll through the manuscript</div>
+
+        <span class="punctuation p1">,</span>
+        <span class="punctuation p2">;</span>
+        <span class="punctuation p3">:</span>
+        <span class="punctuation p4">.</span>
+
+        <article class="fold f1">
+          <div class="pen-photo">
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1500&q=90" alt="SCRIPTUM S1 Obsidian">
+          </div>
+          <span class="pen-index">01</span>
+          <div class="pen-price"><span>Giá hoàn thiện</span><strong>68.000.000₫</strong></div>
+          <div class="pen-copy">
+            <div class="pen-type">Obsidian resin · 18K nib</div>
+            <h3 class="pen-name">SCRIPTUM S1</h3>
+            <p class="pen-desc">Thân resin đen sâu, ngòi vàng 18K được tune thủ công và clip antique gold.</p>
+          </div>
+        </article>
+
+        <article class="fold f2">
+          <div class="pen-photo">
+            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1500&q=90" alt="AUREA 18K">
+          </div>
+          <span class="pen-index">02</span>
+          <div class="pen-price"><span>Giá hoàn thiện</span><strong>126.000.000₫</strong></div>
+          <div class="pen-copy">
+            <div class="pen-type">Solid gold trim · Custom grind</div>
+            <h3 class="pen-name">AUREA 18K</h3>
+            <p class="pen-desc">Phiên bản vàng 18K với ngòi custom grind và họa tiết guilloché khắc tay.</p>
+          </div>
+        </article>
+
+        <article class="fold f3">
+          <div class="pen-photo">
+            <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=1500&q=90" alt="VERDE CELLULOID">
+          </div>
+          <span class="pen-index">03</span>
+          <div class="pen-price"><span>Giá hoàn thiện</span><strong>84.000.000₫</strong></div>
+          <div class="pen-copy">
+            <div class="pen-type">Italian celluloid · Ebonite feed</div>
+            <h3 class="pen-name">VERDE CELLULOID</h3>
+            <p class="pen-desc">Celluloid xanh sâu, feed ebonite và ngòi medium mềm cho nét viết nhiều sắc độ.</p>
+          </div>
+        </article>
+
+        <article class="fold f4">
+          <div class="pen-photo">
+            <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=1500&q=90" alt="IMPERIAL No. 7 Limited">
+          </div>
+          <span class="pen-index">04</span>
+          <div class="pen-price"><span>Giá hoàn thiện</span><strong>248.000.000₫</strong></div>
+          <div class="pen-copy">
+            <div class="pen-type">Limited 12 · Hand engraved</div>
+            <h3 class="pen-name">IMPERIAL No. 7</h3>
+            <p class="pen-desc">Phiên bản giới hạn với thân bạc sterling, engraving cá nhân và hộp walnut thủ công.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4 INK LAB -->
+    <section class="ink-lab" id="ink">
+      <div class="ink-panel">
+        <div>
+          <div class="eyebrow">04 · Ink laboratory</div>
+          <h2 class="serif">Color with<br>a memory.</h2>
+
+          <div class="ink-swatches">
+            <button class="ink-swatch active" type="button" data-ink="oxblood" style="--drop:#6c2431">
+              <span class="ink-drop"></span><strong>Oxblood</strong><small>01</small>
+            </button>
+            <button class="ink-swatch" type="button" data-ink="blue" style="--drop:#243d59">
+              <span class="ink-drop"></span><strong>Midnight Blue</strong><small>02</small>
+            </button>
+            <button class="ink-swatch" type="button" data-ink="green" style="--drop:#33493c">
+              <span class="ink-drop"></span><strong>Forest Green</strong><small>03</small>
+            </button>
+            <button class="ink-swatch" type="button" data-ink="sepia" style="--drop:#6f5135">
+              <span class="ink-drop"></span><strong>Sepia</strong><small>04</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="ink-description">
+          <p id="inkDescription">Oxblood No. 4 cho sắc đỏ nâu sâu, độ shading cao và chuyển màu rõ trên giấy cotton.</p>
+        </div>
+      </div>
+
+      <div class="ink-vessel">
+        <canvas id="inkCanvas"></canvas>
+        <div class="ink-glass"></div>
+
+        <div class="ink-name">
+          <h3 id="inkName">Oxblood No. 4</h3>
+          <p id="inkMood">Warm, archival and quietly dramatic.</p>
+        </div>
+
+        <div class="ink-data">
+          <div><span>Shading</span><strong id="inkShading">High</strong></div>
+          <div><span>Dry time</span><strong id="inkDry">18 s</strong></div>
+          <div><span>Water resistance</span><strong id="inkWater">Medium</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 NIB COMPOSER -->
+    <section class="composer" id="composer">
+      <div class="composer-shell">
+        <div class="desk"></div>
+
+        <div class="composer-head">
+          <div class="eyebrow">05 · Nib composer</div>
+          <h2 class="serif">Build the instrument<br>around the hand.</h2>
+        </div>
+
+        <div class="nib-center">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1500&q=90" alt="SCRIPTUM bespoke nib">
+        </div>
+
+        <button class="component nib active" type="button" data-component="nib">
+          <span>01 · Nib</span>
+          <strong>18K Fine Flex</strong>
+          <em>Custom tuned</em>
+        </button>
+
+        <button class="component barrel" type="button" data-component="barrel">
+          <span>02 · Barrel</span>
+          <strong>Obsidian Resin</strong>
+          <em>Hand polished</em>
+        </button>
+
+        <button class="component ink" type="button" data-component="ink">
+          <span>03 · Ink</span>
+          <strong>Oxblood No. 4</strong>
+          <em>Custom bottle</em>
+        </button>
+
+        <button class="component engraving" type="button" data-component="engraving">
+          <span>04 · Engraving</span>
+          <strong>Roman Serif</strong>
+          <em>Hand cut monogram</em>
+        </button>
+
+        <aside class="composer-panel" aria-live="polite">
+          <div class="composer-panel-top"><span>SCRIPTUM commission</span><span id="composeIndex">01 / 04</span></div>
+          <h3 class="composer-name" id="composeName">The Signature</h3>
+          <p class="composer-style" id="composeStyle">18K Fine Flex · Obsidian Resin · Oxblood</p>
+
+          <div class="writing-preview" id="writingPreview">Your hand, your rhythm.</div>
+
+          <div class="composer-stats">
+            <div class="composer-stat"><span>Nib feel</span><strong id="composeFeel">Soft</strong></div>
+            <div class="composer-stat"><span>Line variation</span><strong id="composeVariation">Medium</strong></div>
+            <div class="composer-stat"><span>Ink flow</span><strong id="composeFlow">Balanced</strong></div>
+          </div>
+
+          <div class="composer-price">
+            <span>Giá cấu hình dự kiến</span>
+            <strong id="composePrice">92.000.000₫</strong>
+          </div>
+        </aside>
+
+        <div class="composer-modes">
+          <button class="mode active" type="button" data-mode="signature">Signature</button>
+          <button class="mode" type="button" data-mode="daily">Daily Writing</button>
+          <button class="mode" type="button" data-mode="calligraphy">Calligraphy</button>
+          <button class="mode" type="button" data-mode="collector">Collector</button>
+        </div>
+
+        <div class="composer-actions">
+          <a class="btn dark" href="#finale">Nhận cấu hình</a>
+          <a class="btn" href="#finale">Đặt lịch atelier</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 COMMISSION -->
+    <section class="finale" id="finale">
+      <div class="letter-scene">
+        <div class="letter-bg">
+          <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=2200&q=90" alt="Lá thư và bút máy">
+        </div>
+        <div class="letter-flap"></div>
+
+        <div class="letter-copy">
+          <div class="eyebrow">06 · Write your legacy</div>
+          <h2 class="serif">Some marks should<br>outlive the moment.</h2>
+          <p>Có những dấu ấn không nên được gõ bằng bàn phím. Hãy bắt đầu một cây bút được điều chỉnh cho chính nét viết, nhịp tay và câu chuyện của bạn.</p>
+        </div>
+      </div>
+
+      <div class="commission">
+        <div class="commission-main">
+          <div class="commission-head">
+            <div>
+              <div class="eyebrow">Bespoke commission card</div>
+              <h3>Đặt lịch tại SCRIPTUM Atelier.</h3>
+            </div>
+            <div class="commission-code">
+              <span>Commission reference</span>
+              <strong>SCR-2026-001</strong>
+            </div>
+          </div>
+
+          <form class="commission-form" id="commissionForm">
+            <label class="field"><input type="text" name="engraving" placeholder="Tên muốn khắc" required></label>
+            <label class="field">
+              <select name="typeface" required>
+                <option value="">Kiểu chữ khắc</option>
+                <option>Roman Serif</option>
+                <option>Italic Script</option>
+                <option>Modern Sans</option>
+              </select>
+            </label>
+            <label class="field">
+              <select name="nib" required>
+                <option value="">Loại ngòi</option>
+                <option>Fine</option>
+                <option>Medium</option>
+                <option>Broad</option>
+                <option>Stub</option>
+                <option>Flex</option>
+              </select>
+            </label>
+            <label class="field">
+              <select name="ink" required>
+                <option value="">Màu mực</option>
+                <option>Oxblood</option>
+                <option>Midnight Blue</option>
+                <option>Forest Green</option>
+                <option>Sepia</option>
+              </select>
+            </label>
+            <label class="field">
+              <select name="budget" required>
+                <option value="">Mức ngân sách</option>
+                <option>Dưới 80 triệu</option>
+                <option>80 — 150 triệu</option>
+                <option>150 — 250 triệu</option>
+                <option>Trên 250 triệu</option>
+              </select>
+            </label>
+            <label class="field"><input type="date" name="date" required></label>
+          </form>
+        </div>
+
+        <div class="commission-side">
+          <div>
+            <span>Private nib fitting</span>
+            <strong>60 phút</strong>
+            <div class="seal">S</div>
+            <span>Atelier</span>
+            <strong>28 Trần Phú, Đà Nẵng</strong>
+          </div>
+          <button class="btn dark" type="submit" form="commissionForm">Xác nhận lịch <span>→</span></button>
+        </div>
+      </div>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <div class="marquee-line">Nib Fitting · Custom Grind · Material Selection · Ink Blending · Hand Engraving · Lifetime Service</div>
+          <div class="marquee-line">Nib Fitting · Custom Grind · Material Selection · Ink Blending · Hand Engraving · Lifetime Service</div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <a class="footer-brand" href="#hero">SCRIPTUM</a>
+        <nav class="footer-nav">
+          <a href="#writing">Writing Test</a>
+          <a href="#collection">Collection</a>
+          <a href="#ink">Ink Lab</a>
+          <a href="#composer">Composer</a>
+        </nav>
+        <div class="footer-copy">© 2026 SCRIPTUM Atelier</div>
+      </footer>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const desktop = window.matchMedia("(min-width: 781px)").matches;
+      let lenis;
+
+      if (!reduced && window.Lenis) {
+        lenis = new Lenis({
+          duration: 1.1,
+          smoothWheel: true,
+          wheelMultiplier: .9,
+          touchMultiplier: 1.15
+        });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add(time => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
+
+      // Navigation
+      const menuToggle = document.querySelector(".menu-toggle");
+      const mobileMenu = document.querySelector(".mobile-menu");
+
+      function closeMenu() {
+        mobileMenu.classList.remove("active");
+        mobileMenu.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("menu-open");
+        menuToggle.textContent = "Menu";
+      }
+
+      menuToggle.addEventListener("click", () => {
+        const open = mobileMenu.classList.toggle("active");
+        mobileMenu.setAttribute("aria-hidden", String(!open));
+        document.body.classList.toggle("menu-open", open);
+        menuToggle.textContent = open ? "Đóng" : "Menu";
+      });
+
+      mobileMenu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+
+      document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener("click", event => {
+          const target = document.querySelector(link.getAttribute("href"));
+          if (!target || !lenis) return;
+          event.preventDefault();
+          lenis.scrollTo(target, { duration: 1.25 });
+        });
+      });
+
+      // Hero
+      const heroTl = gsap.timeline({ defaults: { ease: "power4.inOut" } });
+      heroTl
+        .to(".hero-pen", { clipPath: "inset(0 0% 0 0)", duration: 1.25, delay: .1 })
+        .to(".hero-pen img", { scale: 1, duration: 1.5 }, .1)
+        .to(".ink-path", { strokeDashoffset: 0, duration: 1.8, stagger: .12 }, .18)
+        .to(".hero-title i", { yPercent: 0, y: 0, duration: 1.05, stagger: .08 }, .55)
+        .from(".hero-copy, .hero-note, .hero-actions, .hero-page", {
+          opacity: 0, y: 24, duration: .8, stagger: .08
+        }, .72);
+
+      if (!reduced) {
+        gsap.timeline({
+          scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 }
+        })
+        .to(".hero-pen", { rotate: 3, xPercent: 8, yPercent: 9 }, 0)
+        .to(".hero-title", { xPercent: -5 }, 0)
+        .to(".ink-path", { strokeDashoffset: -260 }, 0);
+      }
+
+      // Ink cursor on hero
+      if (desktop && !reduced) {
+        const cursor = document.querySelector(".ink-cursor");
+        const hero = document.querySelector(".hero");
+
+        hero.addEventListener("mouseenter", () => gsap.to(cursor, { opacity: 1, duration: .2 }));
+        hero.addEventListener("mouseleave", () => gsap.to(cursor, { opacity: 0, duration: .2 }));
+        hero.addEventListener("mousemove", event => {
+          gsap.to(cursor, { x: event.clientX, y: event.clientY, duration: .3, ease: "power3.out" });
+        });
+      }
+
+      // Writing canvas
+      const writingCanvas = document.getElementById("writingCanvas");
+      const wctx = writingCanvas.getContext("2d");
+      const paperCanvas = document.querySelector(".paper-canvas");
+      const sampleText = document.querySelector(".canvas-sample");
+      let drawing = false;
+      let lastPoint = null;
+      let nibConfig = { width: 2.2, color: "#6c2431", pressure: 1 };
+      let guideVisible = true;
+
+      const nibData = {
+        fine: { width: 1.8, info: ["0.4 mm","Balanced","Low"] },
+        medium: { width: 3.2, info: ["0.6 mm","Medium","Low"] },
+        broad: { width: 5.5, info: ["0.9 mm","Wet","Low"] },
+        stub: { width: 7.2, info: ["1.1 mm","Wet","Edge"] },
+        flex: { width: 3.2, info: ["0.4—1.3 mm","Wet","High"] }
+      };
+      let currentNib = "fine";
+
+      function resizeWritingCanvas() {
+        const rect = paperCanvas.getBoundingClientRect();
+        const ratio = Math.max(1, window.devicePixelRatio || 1);
+        const snapshot = document.createElement("canvas");
+        snapshot.width = writingCanvas.width;
+        snapshot.height = writingCanvas.height;
+        snapshot.getContext("2d").drawImage(writingCanvas, 0, 0);
+
+        writingCanvas.width = Math.floor(rect.width * ratio);
+        writingCanvas.height = Math.floor(rect.height * ratio);
+        writingCanvas.style.width = rect.width + "px";
+        writingCanvas.style.height = rect.height + "px";
+        wctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+        if (snapshot.width && snapshot.height) {
+          wctx.drawImage(snapshot, 0, 0, snapshot.width, snapshot.height, 0, 0, rect.width, rect.height);
+        }
+      }
+
+      function pointFromEvent(event) {
+        const rect = writingCanvas.getBoundingClientRect();
+        const source = event.touches ? event.touches[0] : event;
+        return { x: source.clientX - rect.left, y: source.clientY - rect.top };
+      }
+
+      function drawLine(from, to, event) {
+        const speed = Math.hypot(to.x - from.x, to.y - from.y);
+        let width = nibData[currentNib].width;
+
+        if (currentNib === "flex") {
+          width = Math.max(2.2, Math.min(8.5, 9 - speed * .45));
+        }
+        if (currentNib === "stub") {
+          wctx.save();
+          wctx.translate(to.x, to.y);
+          wctx.rotate(-0.35);
+          wctx.fillStyle = nibConfig.color;
+          wctx.fillRect(-width / 2, -1.4, width, 2.8);
+          wctx.restore();
+          return;
+        }
+
+        wctx.beginPath();
+        wctx.moveTo(from.x, from.y);
+        wctx.lineTo(to.x, to.y);
+        wctx.strokeStyle = nibConfig.color;
+        wctx.lineWidth = width;
+        wctx.lineCap = "round";
+        wctx.lineJoin = "round";
+        wctx.globalAlpha = currentNib === "broad" ? .88 : .95;
+        wctx.stroke();
+        wctx.globalAlpha = 1;
+      }
+
+      function startDraw(event) {
+        event.preventDefault();
+        drawing = true;
+        lastPoint = pointFromEvent(event);
+      }
+
+      function moveDraw(event) {
+        if (!drawing) return;
+        event.preventDefault();
+        const point = pointFromEvent(event);
+        drawLine(lastPoint, point, event);
+        lastPoint = point;
+      }
+
+      function endDraw() {
+        drawing = false;
+        lastPoint = null;
+      }
+
+      ["mousedown","touchstart"].forEach(type => writingCanvas.addEventListener(type, startDraw, { passive:false }));
+      ["mousemove","touchmove"].forEach(type => writingCanvas.addEventListener(type, moveDraw, { passive:false }));
+      ["mouseup","mouseleave","touchend","touchcancel"].forEach(type => writingCanvas.addEventListener(type, endDraw));
+
+      document.querySelectorAll(".nib-option").forEach(button => {
+        button.addEventListener("click", () => {
+          currentNib = button.dataset.nib;
+          const data = nibData[currentNib];
+          document.querySelectorAll(".nib-option").forEach(item => item.classList.toggle("active", item === button));
+          document.getElementById("nibWidth").textContent = data.info[0];
+          document.getElementById("nibWetness").textContent = data.info[1];
+          document.getElementById("nibFlex").textContent = data.info[2];
+        });
+      });
+
+      document.getElementById("clearCanvas").addEventListener("click", () => {
+        wctx.clearRect(0, 0, writingCanvas.width, writingCanvas.height);
+      });
+
+      document.getElementById("guideCanvas").addEventListener("click", event => {
+        guideVisible = !guideVisible;
+        sampleText.style.display = guideVisible ? "" : "none";
+        event.currentTarget.textContent = guideVisible ? "Ẩn mẫu" : "Hiện mẫu";
+      });
+
+      // Collection folds
+      gsap.from(".collection-head > *", {
+        y: 70, opacity: 0, duration: 1, stagger: .14,
+        scrollTrigger: { trigger: ".collection-head", start: "top 78%" }
+      });
+
+      gsap.utils.toArray(".fold").forEach((fold, index) => {
+        gsap.from(fold, {
+          rotateX: index % 2 ? -36 : 36,
+          y: 90,
+          opacity: 0,
+          transformOrigin: index % 2 ? "top" : "bottom",
+          duration: 1.1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: fold, start: "top 82%" }
+        });
+        gsap.fromTo(fold.querySelector("img"), { scale: 1.16 }, {
+          scale: 1.04,
+          duration: 1.5,
+          ease: "power3.out",
+          scrollTrigger: { trigger: fold, start: "top 82%" }
+        });
+      });
+
+      // Ink lab canvas
+      const inkCanvas = document.getElementById("inkCanvas");
+      const ictx = inkCanvas.getContext("2d");
+      const vessel = document.querySelector(".ink-vessel");
+      let inkColor = "#6c2431";
+      let inkParticles = [];
+      let animationFrame;
+
+      function resizeInkCanvas() {
+        const rect = vessel.getBoundingClientRect();
+        const ratio = Math.max(1, window.devicePixelRatio || 1);
+        inkCanvas.width = Math.floor(rect.width * ratio);
+        inkCanvas.height = Math.floor(rect.height * ratio);
+        inkCanvas.style.width = rect.width + "px";
+        inkCanvas.style.height = rect.height + "px";
+        ictx.setTransform(ratio,0,0,ratio,0,0);
+        resetInk();
+      }
+
+      function resetInk() {
+        inkParticles = [];
+        const rect = vessel.getBoundingClientRect();
+        for (let i = 0; i < 70; i++) {
+          inkParticles.push({
+            x: rect.width * .5 + (Math.random() - .5) * 80,
+            y: rect.height * .42 + (Math.random() - .5) * 60,
+            r: 12 + Math.random() * 36,
+            vx: (Math.random() - .5) * .45,
+            vy: .08 + Math.random() * .4,
+            alpha: .035 + Math.random() * .07
+          });
+        }
+      }
+
+      function hexToRgb(hex) {
+        const clean = hex.replace("#","");
+        const bigint = parseInt(clean,16);
+        return {
+          r:(bigint>>16)&255,
+          g:(bigint>>8)&255,
+          b:bigint&255
+        };
+      }
+
+      function animateInk() {
+        const rect = vessel.getBoundingClientRect();
+        ictx.clearRect(0,0,rect.width,rect.height);
+        const rgb = hexToRgb(inkColor);
+
+        inkParticles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.r += .045;
+          p.alpha *= .9994;
+
+          if (p.y > rect.height * .7 || p.alpha < .01) {
+            p.x = rect.width * .5 + (Math.random() - .5) * 90;
+            p.y = rect.height * .4 + (Math.random() - .5) * 50;
+            p.r = 12 + Math.random() * 28;
+            p.alpha = .04 + Math.random() * .07;
+          }
+
+          const gradient = ictx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+          gradient.addColorStop(0,`rgba(${rgb.r},${rgb.g},${rgb.b},${p.alpha})`);
+          gradient.addColorStop(1,`rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+          ictx.fillStyle = gradient;
+          ictx.beginPath();
+          ictx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ictx.fill();
+        });
+
+        animationFrame = requestAnimationFrame(animateInk);
+      }
+
+      const inks = {
+        oxblood: {
+          color:"#6c2431", bg:"#5b1f2a", name:"Oxblood No. 4",
+          mood:"Warm, archival and quietly dramatic.",
+          desc:"Oxblood No. 4 cho sắc đỏ nâu sâu, độ shading cao và chuyển màu rõ trên giấy cotton.",
+          data:["High","18 s","Medium"]
+        },
+        blue: {
+          color:"#243d59", bg:"#1c3249", name:"Midnight Blue",
+          mood:"Formal, cool and almost architectural.",
+          desc:"Midnight Blue là sắc xanh lạnh gần đen, khô nhanh và phù hợp chữ ký hoặc ghi chép hàng ngày.",
+          data:["Medium","14 s","High"]
+        },
+        green: {
+          color:"#33493c", bg:"#293b32", name:"Forest Green",
+          mood:"Deep, organic and quietly expressive.",
+          desc:"Forest Green tạo sắc xanh thẫm, shading nhẹ và cảm giác giàu chiều sâu trên giấy ngà.",
+          data:["Medium","17 s","Medium"]
+        },
+        sepia: {
+          color:"#6f5135", bg:"#59422d", name:"Sepia Archive",
+          mood:"Warm, historic and softly nostalgic.",
+          desc:"Sepia Archive mô phỏng sắc mực tài liệu cũ, chuyển từ nâu vàng sang nâu sẫm khi khô.",
+          data:["High","20 s","Low"]
+        }
+      };
+
+      document.querySelectorAll(".ink-swatch").forEach(button => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.ink;
+          const data = inks[key];
+          inkColor = data.color;
+          document.querySelectorAll(".ink-swatch").forEach(item => item.classList.toggle("active", item === button));
+          document.querySelector(".ink-lab").style.backgroundColor = data.bg;
+          resetInk();
+
+          gsap.to(["#inkName","#inkMood","#inkDescription","#inkShading","#inkDry","#inkWater"], {
+            opacity:0,y:10,duration:.18,
+            onComplete:() => {
+              document.getElementById("inkName").textContent = data.name;
+              document.getElementById("inkMood").textContent = data.mood;
+              document.getElementById("inkDescription").textContent = data.desc;
+              document.getElementById("inkShading").textContent = data.data[0];
+              document.getElementById("inkDry").textContent = data.data[1];
+              document.getElementById("inkWater").textContent = data.data[2];
+
+              gsap.to(["#inkName","#inkMood","#inkDescription","#inkShading","#inkDry","#inkWater"], {
+                opacity:1,y:0,duration:.35,stagger:.03
+              });
+            }
+          });
+        });
+      });
+
+      gsap.from(".ink-panel > *", {
+        y:60,opacity:0,duration:1,stagger:.12,
+        scrollTrigger:{trigger:".ink-lab",start:"top 74%"}
+      });
+      gsap.from(".ink-vessel", {
+        clipPath:"inset(0 0 0 100%)",duration:1.3,ease:"power4.inOut",
+        scrollTrigger:{trigger:".ink-lab",start:"top 74%"}
+      });
+
+      // Nib composer
+      const composeData = {
+        signature: {
+          index:"01 / 04",name:"The Signature",
+          style:"18K Fine Flex · Obsidian Resin · Oxblood",
+          preview:"Your hand, your rhythm.",
+          feel:"Soft",variation:"Medium",flow:"Balanced",price:92000000
+        },
+        daily: {
+          index:"02 / 04",name:"The Daily",
+          style:"14K Medium · Black Ebonite · Midnight Blue",
+          preview:"Ideas become clearer on paper.",
+          feel:"Smooth",variation:"Low",flow:"Controlled",price:74000000
+        },
+        calligraphy: {
+          index:"03 / 04",name:"The Calligrapher",
+          style:"18K Stub · Verde Celluloid · Forest Green",
+          preview:"Form follows the movement of the hand.",
+          feel:"Crisp",variation:"High",flow:"Wet",price:118000000
+        },
+        collector: {
+          index:"04 / 04",name:"The Imperial",
+          style:"18K Broad · Sterling Silver · Sepia",
+          preview:"An instrument made to be remembered.",
+          feel:"Cushioned",variation:"Medium",flow:"Rich",price:248000000
+        }
+      };
+      let selectedMode = "signature";
+      const formatPrice = value => `${Math.round(value).toLocaleString("vi-VN")}₫`;
+
+      function updateComposer() {
+        const data = composeData[selectedMode];
+        gsap.to(["#composeIndex","#composeName","#composeStyle","#writingPreview","#composeFeel","#composeVariation","#composeFlow","#composePrice"], {
+          opacity:0,y:10,duration:.18,
+          onComplete:() => {
+            document.getElementById("composeIndex").textContent = data.index;
+            document.getElementById("composeName").textContent = data.name;
+            document.getElementById("composeStyle").textContent = data.style;
+            document.getElementById("writingPreview").textContent = data.preview;
+            document.getElementById("composeFeel").textContent = data.feel;
+            document.getElementById("composeVariation").textContent = data.variation;
+            document.getElementById("composeFlow").textContent = data.flow;
+            document.getElementById("composePrice").textContent = formatPrice(data.price);
+
+            gsap.to(["#composeIndex","#composeName","#composeStyle","#writingPreview","#composeFeel","#composeVariation","#composeFlow","#composePrice"], {
+              opacity:1,y:0,duration:.35,stagger:.03
+            });
+          }
+        });
+
+        gsap.fromTo(".nib-center", { scale:.93,rotate:-2,opacity:.65 }, {
+          scale:1,rotate:0,opacity:1,duration:.6,ease:"power3.out"
+        });
+      }
+
+      document.querySelectorAll("[data-mode]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedMode = button.dataset.mode;
+          document.querySelectorAll("[data-mode]").forEach(item => item.classList.toggle("active", item === button));
+          updateComposer();
+        });
+      });
+
+      document.querySelectorAll("[data-component]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-component]").forEach(item => item.classList.toggle("active", item === button));
+          gsap.fromTo(button,{scale:.94},{scale:1,duration:.35,ease:"back.out(1.6)"});
+          gsap.fromTo(".nib-center",{x:button.dataset.component==="nib"?-8:8},{x:0,duration:.45});
+        });
+      });
+
+      gsap.from(".composer-head, .component, .composer-panel, .composer-modes, .composer-actions", {
+        y:45,opacity:0,duration:.9,stagger:.07,
+        scrollTrigger:{trigger:".composer",start:"top 70%"}
+      });
+      gsap.from(".nib-center", {
+        clipPath:"inset(0 100% 0 0)",duration:1.25,ease:"power4.inOut",
+        scrollTrigger:{trigger:".composer",start:"top 70%"}
+      });
+
+      // Finale
+      gsap.from(".letter-copy > *", {
+        y:70,opacity:0,duration:1,stagger:.12,
+        scrollTrigger:{trigger:".letter-scene",start:"top 68%"}
+      });
+      gsap.from(".commission", {
+        y:90,opacity:0,duration:1.05,ease:"power3.out",
+        scrollTrigger:{trigger:".commission",start:"top 88%"}
+      });
+
+      if (!reduced) {
+        gsap.timeline({
+          scrollTrigger:{trigger:".letter-scene",start:"top 72%",end:"bottom bottom",scrub:1}
+        })
+        .to(".letter-flap",{rotateX:-145,top:"-10%"},0)
+        .to(".letter-bg img",{scale:1,yPercent:6},0);
+      }
+
+      const commissionForm = document.getElementById("commissionForm");
+      commissionForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const button = document.querySelector('[form="commissionForm"]');
+        const original = button.innerHTML;
+        button.innerHTML = "Đã nhận yêu cầu · SCRIPTUM sẽ liên hệ";
+        button.style.pointerEvents = "none";
+
+        setTimeout(() => {
+          button.innerHTML = original;
+          button.style.pointerEvents = "";
+          commissionForm.reset();
+        }, 3000);
+      });
+
+      window.addEventListener("load", () => {
+        resizeWritingCanvas();
+        resizeInkCanvas();
+        animateInk();
+        ScrollTrigger.refresh();
+      });
+
+      window.addEventListener("resize", () => {
+        resizeWritingCanvas();
+        resizeInkCanvas();
+      });
+
+      window.addEventListener("beforeunload", () => cancelAnimationFrame(animationFrame));
+    });
+  </script>
+</body>
+</html>
